@@ -1,8 +1,6 @@
 #!/usr/bin/python
 #--------------------------------------------------------
-#~Wordpress Hash Cracker
-#~By Nofawkx-Al
-#~Hacking Is illegal ! 
+#~BCrypt Hash Cracker 
 #~We love Defacement
 #--------------------------------------------------------
 from passlib.hash import phpass
@@ -28,7 +26,7 @@ def logo():
          |---``\  _.'
       .-`'---``_.'
      (__...--``        Black Hat hash Crack 
-                             Nofawkx-Al
+                             BCrypt
 '''
 logo()
 #--------------------------------------------------------
