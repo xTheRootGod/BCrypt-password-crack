@@ -26,8 +26,8 @@ def logo():
          |    \.-``  )
          |---``\  _.'
       .-`'---``_.'
-     (__...--``        Black Hat hash Crack 
-                             BCrypt
+     (__...--``    BCrypt crack 2.0 Final Relase
+                            By Alex N
 ''')
 
 logo()
