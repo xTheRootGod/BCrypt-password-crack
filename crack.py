@@ -3,7 +3,7 @@ import threading
 import bcrypt
 from tqdm import tqdm
 
-# Variabile pentru numărul total de parole încercate și pentru a verifica dacă parola a fost găsită
+# Variables for the total number of attempted passwords and to check if the password has been found
 total_passwords_attempted = 0
 password_found = False  
 
