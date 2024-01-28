@@ -26,8 +26,8 @@ def logo():
          |    \.-``  )
          |---``\  _.'
       .-`'---``_.'
-     (__...--``    BCrypt crack 2.0 Final Relase
-                            By Alex N
+     (__...--``    BCrypt crack 2.0 Final Release
+                             By Alex N
 ''')
 
 logo()
