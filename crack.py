@@ -1,6 +1,11 @@
 import sys
 import threading
 import bcrypt
+from tqdm import tqdm
+
+# Variabile pentru numărul total de parole încercate și pentru a verifica dacă parola a fost găsită
+total_passwords_attempted = 0
+password_found = False  
 
 #--------------------------------------------------------
 class bcolors:
@@ -39,16 +44,33 @@ except:
 
 #--------------------------------------------------------
 def crack(password):
-    hashed = bcrypt.checkpw(password.encode('utf-8'), hash_input.encode('utf-8'))
-    hashedpass = str(hashed) + ":" + str(password)
+    global total_passwords_attempted
+    global password_found
     
-    if hashedpass == "True:" + password:
-        print(bcolors.OKGREEN + "+---------------------------------------+")
-        print(bcolors.OKGREEN + "| Operation completed successfully!")
-        print(bcolors.OKGREEN + "| HASH > " + " " + hash_input)
-        print(bcolors.OKGREEN + "| Password >" + " " + password)
-        print(bcolors.OKGREEN + "+---------------------------------------+")
-        sys.exit(1)
+    if not password_found:  
+        hashed = bcrypt.checkpw(password.encode('utf-8'), hash_input.encode('utf-8'))
+        hashedpass = str(hashed) + ":" + str(password)
+
+        if hashedpass == "True:" + password:
+            print(bcolors.OKGREEN + "+---------------------------------------+")
+            print(bcolors.OKGREEN + "| Operation completed successfully!")
+            print(bcolors.OKGREEN + "| HASH > " + " " + hash_input)
+            print(bcolors.OKGREEN + "| Password >" + " " + password)
+            print(bcolors.OKGREEN + "+---------------------------------------+")
+            password_found = True  
+            display_password_details(password)
+            sys.exit(1)
+
+        total_passwords_attempted += 1
+        tqdm.write("Progress: {:,} passwords attempted".format(total_passwords_attempted), end='\r')
+
+#--------------------------------------------------------
+def display_password_details(password):
+    print(bcolors.OKBLUE + "| Password Details:")
+    print(bcolors.OKBLUE + "|   Length: {}".format(len(password)))
+    print(bcolors.OKBLUE + "|   Characters: {}".format(' '.join(password)))
+    print(bcolors.OKBLUE + "|   ASCII Values: {}".format(' '.join(str(ord(char)) for char in password)))
+    print(bcolors.OKBLUE + "|   Hashed Password: {}".format(hash_input))
 
 #--------------------------------------------------------
 print(bcolors.OKBLUE + "+---------------------------------------+")
