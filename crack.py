@@ -6,7 +6,8 @@ import os
 
 # Variables for the total number of attempted passwords and to check if the password has been found
 total_passwords_attempted = 0
-password_found = False  
+password_found = False
+lock = threading.Lock()
 
 #--------------------------------------------------------
 class bcolors:
@@ -19,7 +20,7 @@ class bcolors:
 
 #--------------------------------------------------------
 def logo():
-    print(bcolors.WARNING + '''                _
+    print(bcolors.WARNING + r'''                _
                /`_>
               / /
               |/
@@ -28,7 +29,11 @@ def logo():
          |---``\  _.'
       .-`'---``_.'
      (__...--``    BCrypt crack 2.0 Final Release
-                             By Alex N
+                             By TheRootGod
+                             
+                             tryhackme.com/p/TheRootGod
+                             github.com/xTheRootGod
+                             
 ''')
 
 logo()
@@ -47,53 +52,81 @@ if not os.path.exists(passl):
 threads = 1
 
 try:
-    plist = open(passl).readlines()
-except:
-    print(bcolors.FAIL + "| Couldn't read the provided wordlist!")
+    with open(passl, 'r', encoding='utf-8', errors='ignore') as f:
+        plist = f.readlines()
+except Exception as e:
+    print(bcolors.FAIL + f"| Couldn't read the provided wordlist! Error: {e}")
+    sys.exit(1)
 
 #--------------------------------------------------------
 def crack(password):
     global total_passwords_attempted
     global password_found
     
-    if not password_found:  
+    if password_found:
+        return
+    
+    try:
         hashed = bcrypt.checkpw(password.encode('utf-8'), hash_input.encode('utf-8'))
-        hashedpass = str(hashed) + ":" + str(password)
-
-        if hashedpass == "True:" + password:
-            print(bcolors.OKGREEN + "+---------------------------------------+")
-            print(bcolors.OKGREEN + "| Operation completed successfully!")
-            print(bcolors.OKGREEN + "| HASH > " + " " + hash_input)
-            print(bcolors.OKGREEN + "| Password >" + " " + password)
-            print(bcolors.OKGREEN + "+---------------------------------------+")
-            password_found = True  
-            display_password_details(password)
-            sys.exit(1)
-
-        total_passwords_attempted += 1
-        tqdm.write("Progress: {:,} passwords attempted".format(total_passwords_attempted), end='\r')
-
-    # If the password has not been found and all passwords from the list have been attempted, display an error message
-    if total_passwords_attempted == len(plist):
-        print(bcolors.FAIL + "Password not found. Try with another wordlist.")
+        
+        if hashed:
+            with lock:
+                if not password_found:  # Double-check to prevent multiple threads from printing
+                    password_found = True
+                    print(bcolors.OKGREEN + "+---------------------------------------+")
+                    print(bcolors.OKGREEN + "| Operation completed successfully!")
+                    print(bcolors.OKGREEN + "| HASH > " + " " + hash_input)
+                    print(bcolors.OKGREEN + "| Password >" + " " + password)
+                    print(bcolors.OKGREEN + "+---------------------------------------+")
+                    display_password_details(password)
+                    os._exit(1)  # Force exit all threads
+        
+        with lock:
+            total_passwords_attempted += 1
+            if total_passwords_attempted % 100 == 0:  # Update progress every 100 attempts
+                tqdm.write(f"Progress: {total_passwords_attempted:,} passwords attempted", end='\r')
+                
+    except Exception as e:
+        with lock:
+            print(bcolors.FAIL + f"Error processing password '{password}': {e}")
 
 #--------------------------------------------------------
 def display_password_details(password):
     print(bcolors.OKBLUE + "| Password Details:")
-    print(bcolors.OKBLUE + "|   Length: {}".format(len(password)))
-    print(bcolors.OKBLUE + "|   Characters: {}".format(' '.join(password)))
-    print(bcolors.OKBLUE + "|   ASCII Values: {}".format(' '.join(str(ord(char)) for char in password)))
-    print(bcolors.OKBLUE + "|   Hashed Password: {}".format(hash_input))
+    print(bcolors.OKBLUE + f"|   Length: {len(password)}")
+    print(bcolors.OKBLUE + f"|   Characters: {' '.join(password)}")
+    print(bcolors.OKBLUE + f"|   ASCII Values: {' '.join(str(ord(char)) for char in password)}")
+    print(bcolors.OKBLUE + f"|   Hashed Password: {hash_input}")
 
 #--------------------------------------------------------
 print(bcolors.OKBLUE + "+---------------------------------------+")
-print(bcolors.OKBLUE + "| Cracking, please wait...")
-print(bcolors.OKBLUE + "| Loaded %s passwords!" % len(plist))
+print(bcolors.OKBLUE + f"| Cracking, please wait...")
+print(bcolors.OKBLUE + f"| Loaded {len(plist)} passwords!")
 print(bcolors.OKBLUE + "+---------------------------------------+")
 
+# Create and start threads
+thread_list = []
 for password in plist:
-    password = password.rstrip()
+    if password_found:
+        break
+        
+    password = password.strip()
+    if not password:
+        continue
+        
+    t = threading.Thread(target=crack, args=(password,))
+    t.daemon = True
+    thread_list.append(t)
+    t.start()
     
-    for i in range(threads):
-        t = threading.Thread(target=crack, args=(password,))
-        t.start()
+    # Limit the number of concurrent threads
+    while threading.active_count() > threads + 1:  # +1 for main thread
+        pass
+
+# Wait for all threads to complete
+for t in thread_list:
+    t.join()
+
+# If we get here and password wasn't found
+if not password_found:
+    print(bcolors.FAIL + "Password not found. Try with another wordlist.")
