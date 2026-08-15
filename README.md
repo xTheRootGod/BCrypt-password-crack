@@ -1,5 +1,7 @@
 # BCrypt Password Crack 2.0 Final Release
-Bcrypt Password Cracked
+
+BCrypt Crack 2.0 is a powerful, multi-threaded password cracking utility built specifically for recovering plaintext passwords from bcrypt hashes ( 2 a 2a, 2 b 2b, 2 x 2x, 2 y 2y formats). Unlike general-purpose crackers, this tool focuses exclusively on bcrypt's unique characteristics, including its adaptive cost factor and deliberate resistance to GPU acceleration.
+
 ```bash
 git clone https://github.com/LinuxDestroy/BCrypt-password-crack.git && cd BCrypt-password-crack
 ```
