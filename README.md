@@ -6,4 +6,5 @@ git clone https://github.com/LinuxDestroy/BCrypt-password-crack.git && cd BCrypt
 ```bash
 python3 crack.py
 ```
-<img width="853" height="715" alt="Screenshot from 2025-09-21 05-20-45" src="https://github.com/user-attachments/assets/ed720618-61fb-44a9-8bd0-c5354d55163a" />
+<img width="1312" height="974" alt="Screenshot from 2026-08-15 06-33-31" src="https://github.com/user-attachments/assets/666cc7ce-0598-4fc4-a092-61db5b4fd04f" />
+
