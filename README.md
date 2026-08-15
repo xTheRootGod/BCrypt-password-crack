@@ -18,5 +18,10 @@ python3 crack.py
   [5] Brute force<br>
   [6] GPU acceleration (info)<br>
 
-  <img width="1312" height="974" alt="Screenshot from 2026-08-15 07-06-34" src="https://github.com/user-attachments/assets/c4692afa-6f24-475f-b751-60e48e862315" />
+  <img width="1312" height="974" alt="Screenshot from 2026-08-15 07-06-34" src="https://github.com/user-attachments/assets/c4692afa-6f24-475f-b751-60e48e862315" /><br>
+
+  
+[![TryHackMe](https://img.shields.io/badge/-TryHackMe-3d9970?style=for-the-badge&logo=tryhackme&logoColor=white)](https://tryhackme.com/p/TheRootGod)
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nistor-alexandru-cosmin-a900b5278/)
+
 
